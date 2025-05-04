@@ -34,8 +34,8 @@ This application demonstrates the integration of Next.js API routes with Prisma 
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone https://github.com/elllyers/prismaneon.git
+cd prismaneon
 ```
 
 2. Install dependencies:
