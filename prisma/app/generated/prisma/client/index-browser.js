@@ -124,33 +124,10 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  role: 'role',
   location: 'location',
   password: 'password',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
-};
-
-exports.Prisma.JobListingScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  description: 'description',
-  status: 'status',
-  company: 'company',
-  location: 'location',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  userId: 'userId'
-};
-
-exports.Prisma.ApplicationScalarFieldEnum = {
-  id: 'id',
-  status: 'status',
-  applicationStatus: 'applicationStatus',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  jobListingId: 'jobListingId',
-  userId: 'userId'
 };
 
 exports.Prisma.SortOrder = {
@@ -167,28 +144,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.Role = exports.$Enums.Role = {
-  USER: 'USER',
-  ADMIN: 'ADMIN'
-};
 
-exports.Status = exports.$Enums.Status = {
-  PENDING: 'PENDING',
-  ACCEPTED: 'ACCEPTED',
-  REJECTED: 'REJECTED'
-};
-
-exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
-  PENDING: 'PENDING',
-  INTERVIEW: 'INTERVIEW',
-  OFFER: 'OFFER',
-  REJECTED: 'REJECTED'
-};
 
 exports.Prisma.ModelName = {
-  User: 'User',
-  JobListing: 'JobListing',
-  Application: 'Application'
+  User: 'User'
 };
 
 /**
