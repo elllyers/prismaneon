@@ -1,7 +1,9 @@
 import prisma from "@/lib/prisma";
 import UserForm from "./components/userform";
 
-const users = await prisma.user.findMany();
+const users = await prisma.user.findMany({
+  orderBy: { createdAt: "desc" },
+});
 console.log(users);
 
 export default function Home() {
