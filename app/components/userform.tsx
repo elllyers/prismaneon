@@ -1,45 +1,79 @@
 // components/UserForm.tsx
 "use client";
 
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+interface StatusMessage {
+  text: string;
+  type: "success" | "error";
+}
+
 export default function UserForm() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    location: "",
-    password: "",
-  });
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const [status, setStatus] = useState<StatusMessage | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
+    const formData = new FormData(e.currentTarget);
 
-    try {
-      const response = await fetch("/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+    startTransition(async () => {
+      try {
+        const response = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.get("name"),
+            email: formData.get("email"),
+            location: formData.get("location"),
+            password: formData.get("password"),
+          }),
+        });
 
-      if (!response.ok) throw new Error("Failed to create user");
+        const data = await response.json();
 
-      // Reset form after successful submission
-      setFormData({ name: "", email: "", location: "", password: "" });
-      alert("User created successfully!");
-    } catch (error) {
-      console.error("Error creating user:", error);
-      alert("Error creating user");
-    } finally {
-      setLoading(false);
-    }
-  };
+        if (!response.ok) {
+          // Display the specific error message from the server
+          setStatus({ text: data.error, type: "error" });
+          return;
+        }
+
+        // Reset form
+        (e.target as HTMLFormElement).reset();
+
+        // Show success message
+        setStatus({ text: "User created successfully!", type: "success" });
+
+        // Refresh the current route
+        router.refresh();
+      } catch (error) {
+        console.error("Error creating user:", error);
+        setStatus({
+          text: "Failed to create user. Please try again.",
+          type: "error",
+        });
+      }
+    });
+  }
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+      {status && (
+        <div
+          className={`mb-4 p-2 rounded ${
+            status.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {status.text}
+        </div>
+      )}
+
       <div className="mb-4">
         <label htmlFor="name" className="block mb-2">
           Name
@@ -47,8 +81,7 @@ export default function UserForm() {
         <input
           type="text"
           id="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          name="name"
           className="w-full p-2 border rounded"
           required
         />
@@ -61,8 +94,7 @@ export default function UserForm() {
         <input
           type="email"
           id="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          name="email"
           className="w-full p-2 border rounded"
           autoComplete="email"
           required
@@ -76,10 +108,7 @@ export default function UserForm() {
         <input
           type="text"
           id="location"
-          value={formData.location}
-          onChange={(e) =>
-            setFormData({ ...formData, location: e.target.value })
-          }
+          name="location"
           className="w-full p-2 border rounded"
           required
         />
@@ -92,10 +121,7 @@ export default function UserForm() {
         <input
           type="password"
           id="password"
-          value={formData.password}
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
+          name="password"
           className="w-full p-2 border rounded"
           required
         />
@@ -103,10 +129,10 @@ export default function UserForm() {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={isPending}
         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
       >
-        {loading ? "Submitting..." : "Create User"}
+        {isPending ? "Creating..." : "Create User"}
       </button>
     </form>
   );
