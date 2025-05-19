@@ -1,9 +1,9 @@
 import { PrismaClient } from "@/prisma/app/generated/prisma/client";
 import { neon, neonConfig } from "@neondatabase/serverless";
 
-declare global {
-  var prisma: PrismaClient | undefined;
-}
+const globalForPrisma = global as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -46,10 +46,12 @@ const prismaClientSingleton = () => {
   return prisma;
 };
 
-const prisma = globalThis.prisma ?? prismaClientSingleton();
+// Initialize Prisma Client
+const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 
+// Only set the global instance in development
 if (process.env.NODE_ENV !== "production") {
-  globalThis.prisma = prisma;
+  globalForPrisma.prisma = prisma;
 }
 
 export { sql };
