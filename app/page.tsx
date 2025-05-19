@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import UserForm from "./components/userform";
+import { MemoTransaction } from "./components/word-transition";
 
 const users = await prisma.user.findMany({
   orderBy: { createdAt: "desc" },
@@ -8,7 +9,7 @@ console.log(users);
 
 export default function Home() {
   return (
-    <main>
+    <main className="h-screen max-w-none">
       <div className="block gap-2 sm:gap-4">
         <h1 className="text-xl sm:text-2xl font-bold text-center">
           Welcome to User Management
@@ -28,7 +29,7 @@ export default function Home() {
           ))}
         </div>
         <div className="flex flex-col gap-4 sm:gap-6 bg-slate-950/20 shadow-lg rounded-lg p-4 sm:p-8">
-          <h1 className="text-xl sm:text-2xl font-bold">Create User</h1>
+          <MemoTransaction mainWord="Create User" minWord="Create" />
           <p className="text-xs sm:text-sm text-gray-500">
             Fill out the form below to create a new user.
           </p>
