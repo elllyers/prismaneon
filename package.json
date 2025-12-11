@@ -13,7 +13,7 @@
     "@neondatabase/serverless": "^1.0.0",
     "@prisma/client": "^6.7.0",
     "geist": "^1.4.2",
-    "next": "15.5.2",
+    "next": "15.5.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
